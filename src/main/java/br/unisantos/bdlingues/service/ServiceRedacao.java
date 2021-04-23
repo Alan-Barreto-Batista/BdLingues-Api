@@ -11,14 +11,16 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.unisantos.bdlingues.model.Redacao;
 import br.unisantos.bdlingues.repository.RedacaoRepository;
 import br.unisantos.bdlingues.storage.StorageException;
+import br.unisantos.bdlingues.storage.StorageService;
 
 @Service
-public class ServiceRedacao {
+public class ServiceRedacao implements StorageService {
 
 	private Path rootLocation;
 	private String location = "uploadDir";
@@ -95,6 +97,23 @@ public class ServiceRedacao {
 		} catch (IOException e) {
 			throw new StorageException("Falha ao guardar o arquivo.", e);
 		}
+	}
+
+	@Override
+	public void init() {
+		try {
+			Files.createDirectories(rootLocation);
+		}
+		catch (IOException e) {
+			throw new StorageException("Could not initialize storage", e);
+		}
+		
+	}
+
+	@Override
+	public void deleteAll() {
+		FileSystemUtils.deleteRecursively(rootLocation.toFile());
+		
 	}
 
 }
