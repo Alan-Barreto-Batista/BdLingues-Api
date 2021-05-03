@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +21,7 @@ import br.unisantos.bdlingues.storage.StorageService;
 @Service
 public class ServiceRedacao implements StorageService {
 
-	private Path rootLocation;
+	private final Path rootLocation;
 	private String location = "uploadDir";
 
 	public String getlocation() {
@@ -69,7 +68,7 @@ public class ServiceRedacao implements StorageService {
 		return false;
 	}
 
-	public void storeArquivo(MultipartFile arquivo) {
+	public void storeArquivo(MultipartFile arquivo) throws IOException, StorageException {
 		try {
 			if (arquivo.isEmpty()) {
 				throw new StorageException("Falha ao guardar o arquivo vazio.");
@@ -79,8 +78,9 @@ public class ServiceRedacao implements StorageService {
 			if (!destinationArquivo.getParent().equals(this.rootLocation.toAbsolutePath())) {
 				throw new StorageException("Não é possivel guardar o arquivo fora do diretorio atual.");
 			}
+			
 			try (InputStream inputStream = arquivo.getInputStream()) {
-				Files.copy(inputStream, destinationArquivo, StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(inputStream, destinationArquivo);
 				String nomeArq = arquivo.getOriginalFilename();
 				String[] dados = nomeArq.split("_");
 				int last = dados.length - 1;
