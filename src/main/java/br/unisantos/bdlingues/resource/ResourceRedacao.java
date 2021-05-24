@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.unisantos.bdlingues.exception.StorageException;
 import br.unisantos.bdlingues.model.Redacao;
 import br.unisantos.bdlingues.service.ServiceRedacao;
-import br.unisantos.bdlingues.storage.StorageException;
 
 @RestController
 @RequestMapping("/redacoes")
@@ -30,10 +30,10 @@ public class ResourceRedacao {
 	public ServiceRedacao service;
 
 	@GetMapping
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<List<Redacao>> get() {
 		return ResponseEntity.ok(service.findAll());
 	}
+	
 
 	@GetMapping(value = "/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN')")
@@ -64,7 +64,6 @@ public class ResourceRedacao {
 	}
 
 	@PostMapping(value = "/upload")
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<Void> upload(@RequestParam("arquivo") MultipartFile arquivo) {
 		try { 
 		service.storeArquivo(arquivo);

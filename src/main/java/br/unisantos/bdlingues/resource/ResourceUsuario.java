@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.unisantos.bdlingues.exception.AuthorizationException;
 import br.unisantos.bdlingues.model.Usuario;
 import br.unisantos.bdlingues.service.ServiceUsuario;
 
@@ -26,30 +27,32 @@ public class ResourceUsuario {
 	public ServiceUsuario service;
 
 	@GetMapping
-	//@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<List<Usuario>> get() {
 		return ResponseEntity.ok(service.findAll());
 	}
 
 	@GetMapping(value = "/{id}")
-	//@PreAuthorize("hasAnyRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
+		try {
 		Usuario _usuario = service.findById(id);
 		if (_usuario != null) {
 			return ResponseEntity.ok(_usuario);
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	} catch (AuthorizationException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.build();
+				}
 	}
-
 	@PostMapping
-	//@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<Usuario> add(@RequestBody Usuario obj) {
 		service.create(obj);
 		return ResponseEntity.ok(obj);
 	}
 
 	@PutMapping
-	//@PreAuthorize("hasAnyRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> update(@RequestBody Usuario obj) {
 		if (service.update(obj)) {
 			return ResponseEntity.ok(obj);
@@ -58,7 +61,7 @@ public class ResourceUsuario {
 	}
 
 	@DeleteMapping(value = "/{id}")
-	//@PreAuthorize("hasAnyRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		if (service.delete(id)) {
 			return ResponseEntity.ok().build();

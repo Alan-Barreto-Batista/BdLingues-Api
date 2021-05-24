@@ -5,13 +5,13 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import br.unisantos.bdlingues.service.ServiceUsuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JWTUtil {
 
-	
 	@Value("${jwt.secret}")
 	private String secret;
 
@@ -35,6 +35,17 @@ public class JWTUtil {
 		}
 		return false;
 	}
+	
+	public boolean authorized(Long id) {
+		UserDetailsImpl user =
+		ServiceUsuario.authenticated();
+		System.out.println(user);
+		if (user == null || (!user.hasRole("ROLE_ADMIN")
+		&& !id.equals(user.getId()))) {
+		return false;
+		}
+		return true;
+		}
 
 	public String getUsername(String token) {
 		Claims claims = getClaims(token);

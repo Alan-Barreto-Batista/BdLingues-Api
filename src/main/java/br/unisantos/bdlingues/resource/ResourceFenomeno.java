@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public class ResourceFenomeno {
 		return ResponseEntity.ok(service.findAllOrder());
 	}
 	@GetMapping(value = "/{id}")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
 		Fenomeno _fenomeno = service.findById(id);
 		if(_fenomeno != null) {
@@ -43,6 +45,7 @@ public class ResourceFenomeno {
 		}
 	
 	@GetMapping(value = "/categoria/{categoria}")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<List<Fenomeno>> getByCategoria(@PathVariable("categoria") Long categoria) {
 		List<Fenomeno> _fenomeno = service.findByCategoria(categoria);
 		if(_fenomeno != null) {
@@ -51,12 +54,14 @@ public class ResourceFenomeno {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 	@PostMapping
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<Fenomeno> add(@RequestBody Fenomeno obj) {
 		service.create(obj);
 		return ResponseEntity.ok(obj);
 	}
 
 	@PutMapping
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> update(@RequestBody Fenomeno obj) {
 		if(service.update(obj)) {
 			return ResponseEntity.ok(obj);
@@ -65,6 +70,7 @@ public class ResourceFenomeno {
 	}
 
 	@DeleteMapping(value = "/{id}")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id){
 		if(service.delete(id)) {
 			return ResponseEntity.ok().build();

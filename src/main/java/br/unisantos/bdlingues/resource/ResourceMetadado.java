@@ -19,7 +19,7 @@ import br.unisantos.bdlingues.model.Metadado;
 import br.unisantos.bdlingues.service.ServiceMetadado;
 
 @RestController
-@RequestMapping("/metadado")
+@RequestMapping("/metadados")
 public class ResourceMetadado {
 	
 	@Autowired
@@ -39,8 +39,6 @@ public class ResourceMetadado {
 		}
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-	
-	
 	
 	@GetMapping(value = "/fenomeno/{fenomeno}")
 	@PreAuthorize("hasAnyRole('ADMIN')")

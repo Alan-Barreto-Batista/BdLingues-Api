@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.unisantos.bdlingues.exception.StorageException;
 import br.unisantos.bdlingues.model.Redacao;
 import br.unisantos.bdlingues.repository.RedacaoRepository;
-import br.unisantos.bdlingues.storage.StorageException;
 import br.unisantos.bdlingues.storage.StorageService;
 
 @Service

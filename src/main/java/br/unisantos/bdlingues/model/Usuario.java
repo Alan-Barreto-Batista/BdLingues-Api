@@ -54,8 +54,7 @@ public class Usuario implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "login", length = 60)
-	private String login;
+	
 	@Column(name = "nome", length = 60)
 	private String nome;
 	@Column(name = "email", length = 40, unique = true)
@@ -77,13 +76,6 @@ public class Usuario implements Serializable {
 	@Column(name = "admin")
 	private Boolean admin;
 
-	public String getLogin() {
-		return login;
-	}
-
-	public void setLogin(String login) {
-		this.login = login;
-	}
 
 	public String getNome() {
 		return nome;

@@ -2,15 +2,15 @@ package br.unisantos.bdlingues.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserDetailsImpl implements UserDetails {
-	private static long SerialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private String login;
@@ -20,13 +20,18 @@ public class UserDetailsImpl implements UserDetails {
 	public UserDetailsImpl() {
 	}
 
+	public boolean hasRole(String perfil) {
+		return getAuthorities().contains(new SimpleGrantedAuthority(perfil));
+	}
+
 	public UserDetailsImpl(Long id, String login, String senha, Boolean admin) {
 		super();
 		this.id = id;
 		this.login = login;
 		this.senha = senha;
-		this.authorities = new ArrayList<SimpleGrantedAuthority>();
-		//this.authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));// :new SimpleGrantedAuthority("ROLE_CLIENTE"));
+		Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
+		setAuths.add(new SimpleGrantedAuthority(admin ? "ROLE_ADMIN" : "ROLE_CLIENTE"));
+		this.authorities = new ArrayList<>(setAuths);
 	}
 
 	public Long getId() {
@@ -66,5 +71,11 @@ public class UserDetailsImpl implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "UserDetailsImpl [id=" + id + ", login=" + login + ", senha=" + senha + ", authorities=" + authorities
+				+ "]";
 	}
 }

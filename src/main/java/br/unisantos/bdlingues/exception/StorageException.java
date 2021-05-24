@@ -1,4 +1,4 @@
-package br.unisantos.bdlingues.storage;
+package br.unisantos.bdlingues.exception;
 
 public class StorageException extends RuntimeException {
 
