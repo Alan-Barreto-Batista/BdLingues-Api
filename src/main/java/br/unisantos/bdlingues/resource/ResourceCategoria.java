@@ -36,7 +36,6 @@ public class ResourceCategoria {
 	}
 	
 	@GetMapping(value = "/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
 		Categoria _categoria = service.findById(id);
 		if(_categoria != null) {

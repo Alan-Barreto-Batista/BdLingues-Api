@@ -34,8 +34,8 @@ public class ResourceFenomeno {
 	public ResponseEntity<List<Fenomeno>> getByOrder(){
 		return ResponseEntity.ok(service.findAllOrder());
 	}
+	
 	@GetMapping(value = "/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
 		Fenomeno _fenomeno = service.findById(id);
 		if(_fenomeno != null) {
@@ -45,7 +45,6 @@ public class ResourceFenomeno {
 		}
 	
 	@GetMapping(value = "/categoria/{categoria}")
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<List<Fenomeno>> getByCategoria(@PathVariable("categoria") Long categoria) {
 		List<Fenomeno> _fenomeno = service.findByCategoria(categoria);
 		if(_fenomeno != null) {

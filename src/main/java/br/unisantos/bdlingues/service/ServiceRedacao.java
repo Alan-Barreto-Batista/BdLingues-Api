@@ -2,6 +2,7 @@ package br.unisantos.bdlingues.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,11 +10,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.unisantos.bdlingues.exception.StorageException;
+import br.unisantos.bdlingues.exception.StorageFileNotFoundException;
 import br.unisantos.bdlingues.model.Redacao;
 import br.unisantos.bdlingues.repository.RedacaoRepository;
 import br.unisantos.bdlingues.storage.StorageService;
@@ -67,6 +71,17 @@ public class ServiceRedacao implements StorageService {
 		}
 		return false;
 	}
+	
+	@Override
+	public void init() {
+		try {
+			Files.createDirectories(rootLocation);
+		}
+		catch (IOException e) {
+			throw new StorageException("Não foi possível criar o diretório", e);
+		}
+		
+	}
 
 	public void storeArquivo(MultipartFile arquivo) throws IOException, StorageException {
 		try {
@@ -98,16 +113,29 @@ public class ServiceRedacao implements StorageService {
 			throw new StorageException("Falha ao guardar o arquivo.", e);
 		}
 	}
-
+	
 	@Override
-	public void init() {
+	public Path load(String nomeArq) {
+		return rootLocation.resolve(nomeArq);
+	}
+	
+	@Override
+	public Resource loadAsResource(String nomeArq) {
 		try {
-			Files.createDirectories(rootLocation);
+			Path arquivo = load(nomeArq);
+			Resource resource = new UrlResource(arquivo.toUri());
+			if (resource.exists() || resource.isReadable()) {
+				return resource;
+			}
+			else {
+				throw new StorageFileNotFoundException(
+						"Não foi possível ler o arquivo: " + nomeArq);
+
+			}
 		}
-		catch (IOException e) {
-			throw new StorageException("Could not initialize storage", e);
+		catch (MalformedURLException e) {
+			throw new StorageFileNotFoundException("Não foi possível ler o arquivo: " + nomeArq, e);
 		}
-		
 	}
 
 	@Override
@@ -115,5 +143,7 @@ public class ServiceRedacao implements StorageService {
 		FileSystemUtils.deleteRecursively(rootLocation.toFile());
 		
 	}
+
+	
 
 }

@@ -27,12 +27,12 @@ public class ResourceUsuario {
 	public ServiceUsuario service;
 
 	@GetMapping
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<List<Usuario>> get() {
 		return ResponseEntity.ok(service.findAll());
 	}
 
 	@GetMapping(value = "/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
 		try {
 		Usuario _usuario = service.findById(id);
@@ -52,7 +52,6 @@ public class ResourceUsuario {
 	}
 
 	@PutMapping
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> update(@RequestBody Usuario obj) {
 		if (service.update(obj)) {
 			return ResponseEntity.ok(obj);

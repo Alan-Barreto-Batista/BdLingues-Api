@@ -26,12 +26,10 @@ public class ResourceMetadado {
 	public ServiceMetadado service;
 
 	@GetMapping
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<List<Metadado>> get() {
 		return ResponseEntity.ok(service.findAll());
 		}
 	@GetMapping(value = "/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
 		Metadado _metadado = service.findById(id);
 		if(_metadado != null) {
@@ -41,7 +39,6 @@ public class ResourceMetadado {
 		}
 	
 	@GetMapping(value = "/fenomeno/{fenomeno}")
-	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<List<Metadado>> getByFenomeno(@PathVariable("fenomeno") Long fenomeno) {
 		List<Metadado> _metadado = service.findByFenomeno(fenomeno); 
 		if(_metadado != null) {

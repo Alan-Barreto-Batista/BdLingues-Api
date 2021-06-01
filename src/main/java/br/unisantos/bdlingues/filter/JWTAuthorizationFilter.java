@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import br.unisantos.bdlingues.config.JWTUtil;
+import br.unisantos.bdlingues.config.UserDetailsImpl;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -44,6 +45,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		if (jwtUtil.tokenValido(token)) {
 			String username = jwtUtil.getUsername(token);
 			UserDetails user = userDetailsService.loadUserByUsername(username);
+			System.out.println(user.getAuthorities());
+			System.out.println(((UserDetailsImpl)user).hasRole("ROLE_ADMIN"));
 			return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 		}
 		return null;
