@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.unisantos.bdlingues.model.Categoria;
 import br.unisantos.bdlingues.service.ServiceCategoria;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/categorias")
@@ -25,17 +27,37 @@ public class ResourceCategoria {
 	@Autowired
 	public ServiceCategoria service;
 
-	@GetMapping
+	@GetMapping (produces = "application/json")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200",
+			description = "Retorna a lista de categorias"),
+			@ApiResponse(responseCode = "500",
+			description = "Erro interno de servidor"),
+			})
 	public ResponseEntity<List<Categoria>> get() {
 		return ResponseEntity.ok(service.findAll());
 		}
 	
-	@GetMapping(value = "/todosEmOrdem")
+	@GetMapping(value = "/todosEmOrdem",produces = "application/json")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200",
+			description = "Retorna a lista de categorias em ordem alfabética"),
+			@ApiResponse(responseCode = "500",
+			description = "Erro interno de servidor"),
+	})
 	public ResponseEntity<List<Categoria>> getByOrder() {
 		return ResponseEntity.ok(service.findAllOrder());
 	}
 	
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/{id}",produces = "application/json")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200",
+			description = "Retorna a categoria do número de 'id' informado"),
+			@ApiResponse(responseCode = "500",
+			description = "Erro interno de servidor"),
+			@ApiResponse(responseCode = "404",
+			description = "A categoria que procura não existe")
+	})
 	public ResponseEntity<?> get(@PathVariable("id") Long id) {
 		Categoria _categoria = service.findById(id);
 		if(_categoria != null) {
@@ -44,14 +66,14 @@ public class ResourceCategoria {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 	
-	@PostMapping
+	@PostMapping (produces = "application/json")
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<Categoria> add(@RequestBody Categoria obj) {
 		service.create(obj);
 		return ResponseEntity.ok(obj);
 	}
 
-	@PutMapping
+	@PutMapping	(produces = "application/json")
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> update(@RequestBody Categoria obj) {
 		if(service.update(obj)) {
@@ -60,7 +82,7 @@ public class ResourceCategoria {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
-	@DeleteMapping(value = "/{id}")
+	@DeleteMapping(value = "/{id}",produces = "application/json")
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<?> delete(@PathVariable("id") Long id){
 		if(service.delete(id)) {
