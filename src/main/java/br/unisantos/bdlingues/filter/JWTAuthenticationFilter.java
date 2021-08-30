@@ -1,6 +1,7 @@
 package br.unisantos.bdlingues.filter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.servlet.FilterChain;
@@ -51,5 +52,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String token = jwtUtil.generateToken(username);
 		response.addHeader("Authentication", "Bearer " + token);
 		response.addHeader("access-control-expose-headers", "Authorization");
+		PrintWriter out = response.getWriter();
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		out.print("token: " + jwtUtil.generateToken(username));
+		out.flush();
+		
 	}
 }
